@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Colección · Museo Seminario</title>
+  <link rel="stylesheet" href="css/estilo.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script type="importmap">
+    {"imports":{"three":"https://unpkg.com/three@0.158.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.158.0/examples/jsm/"}}
+  </script>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-brand">
+      <h1>MUSEO SEMINARIO</h1>
+      <span>Diocesano de Cristo Sacerdote</span>
+    </div>
+    <ul class="nav-menu">
+      <li><a href="index.html">Inicio</a></li>
+      <li><a href="coleccion.html" class="active">Colección</a></li>
+      <li><a href="recorrido.html" class="btn-recorrido"><i class="fas fa-vr-cardboard"></i> Recorrido Virtual</a></li>
+      <li><a href="sobre-nosotros.html">Sobre Nosotros</a></li>
+    </ul>
+  </nav>
+
+  <main class="coleccion-page">
+    <h2 class="page-title">Colección Completa</h2>
+    <p class="page-subtitle">Cultura Malagana · Valle del Cauca · 200 a.C. – 400 d.C.</p>
+    <div class="grid-cards" id="pieces-grid"></div>
+  </main>
+
+  <!-- Modal de detalle -->
+  <div id="piece-modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <div class="modal-body">
+
+        <div class="modal-viewer">
+          <!-- 3D Canvas -->
+          <canvas id="modal-canvas"></canvas>
+
+          <!-- Slideshow: dots top, image below, arrows at sides -->
+          <div id="slide-wrap">
+            <div class="slide-dots-bar" id="slide-dots"></div>
+            <img id="slide-img" src="" alt="Vista de la pieza">
+            <div class="slide-arrow" id="slide-prev"><i class="fas fa-chevron-left"></i></div>
+            <div class="slide-arrow" id="slide-next"><i class="fas fa-chevron-right"></i></div>
+          </div>
+
+          <!-- Video -->
+          <div id="vid-wrap"></div>
+
+          <!-- Bottom bar: controls always visible, never on top of content -->
+          <div class="media-controls">
+            <button id="view-3d"     class="active"><i class="fas fa-cube"></i> 3D</button>
+            <button id="view-images"><i class="fas fa-image"></i> Imágenes</button>
+            <button id="view-video" ><i class="fas fa-video"></i> Video</button>
+            <button id="btn-zoom"   style="margin-left:auto;" title="Pantalla completa"><i class="fas fa-expand-alt"></i></button>
+          </div>
+        </div>
+
+        <div class="modal-info">
+          <h3 id="modal-title"></h3>
+          <p id="modal-provenance"></p>
+          <p id="modal-description"></p>
+          <div id="modal-metadata"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2026 Museo Seminario Diocesano de Cristo Sacerdote · Colección Malagana</p>
+  </footer>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
