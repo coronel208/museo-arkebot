@@ -72,7 +72,7 @@ html, body { font-family:'Raleway','Segoe UI',sans-serif; background:var(--bg); 
 }
 .close { position:absolute; top:16px; right:22px; color:var(--gold); font-size:28px; cursor:pointer; z-index:10; transition:transform .2s; }
 .close:hover { transform:scale(1.2); }
-.modal-body   { display:flex; height:100%; }
+.modal-body   { display:flex; height:100%; position:relative; }
 .modal-viewer {
   flex:2; background:#0d0f14;
   position:relative; overflow:hidden;
@@ -161,14 +161,28 @@ html, body { font-family:'Raleway','Segoe UI',sans-serif; background:var(--bg); 
   flex:1; padding:2rem; overflow-y:auto;
   border-left:1px solid #1e2025; min-width:250px;
   display:flex; flex-direction:column; gap:.85rem;
+  transition: background 0.3s, backdrop-filter 0.3s;
 }
 .modal-info::-webkit-scrollbar { width:4px; }
 .modal-info::-webkit-scrollbar-thumb { background:var(--border); border-radius:4px; }
 #modal-title       { font-family:'Cormorant Garamond',Georgia,serif; color:var(--gold); font-size:1.8rem; line-height:1.2; }
 #modal-provenance  { color:var(--sub); font-size:.82rem; }
 #modal-description { color:#ccc; font-size:.90rem; line-height:1.75; }
-#modal-metadata    { border-top:1px solid #1e2025; padding-top:.9rem; display:flex; flex-wrap:wrap; gap:.4rem; margin-top:auto; }
-.mt { background:rgba(212,175,55,.08); border:1px solid var(--border); color:var(--sub); padding:3px 10px; border-radius:13px; font-size:.73rem; }
+#modal-metadata    { border-top:1px solid #1e2025; padding-top:.9rem; display:flex; flex-direction:column; gap:.4rem; margin-top:auto; }
+.mt {
+  display:flex; align-items:center;
+  background:rgba(212,175,55,.08); border:1px solid rgba(212,175,55,.30);
+  border-left:3px solid var(--gold);
+  color:#e8d890; padding:0; border-radius:0 6px 6px 0; font-size:.82rem; overflow:hidden;
+}
+.mt .mt-label {
+  font-size:.66rem; color:#a99e8c; font-weight:600; text-transform:uppercase;
+  letter-spacing:.05em; min-width:100px; flex-shrink:0;
+  padding:7px 10px;
+  border-right:1px solid rgba(212,175,55,.35);
+  background:rgba(0,0,0,.20);
+}
+.mt .mt-value { padding:7px 12px; color:#f0d870; font-weight:500; }
 
 /* ── ABOUT PAGE ─────────────────────────────────────────────── */
 .page-content { padding:0 0 4rem; }

@@ -190,8 +190,13 @@ function openModal(pieceId) {
   document.getElementById('modal-title').textContent       = currentPiece.nombre;
   document.getElementById('modal-provenance').innerHTML    = '<i class="fas fa-map-pin"></i> ' + currentPiece.procedencia;
   document.getElementById('modal-description').textContent = currentPiece.descripcion;
-  document.getElementById('modal-metadata').innerHTML      = currentPiece.metadata
-    .split('·').map(function(t) { return '<span class="mt">' + t.trim() + '</span>'; }).join('');
+  document.getElementById('modal-metadata').innerHTML = currentPiece.metadata
+    .split('·').map(function(t) {
+      var parts = t.trim().split(':');
+      var label = parts[0] ? parts[0].trim() : '';
+      var value = parts[1] ? parts[1].trim() : t.trim();
+      return '<span class="mt"><span class="mt-label">' + label + '</span><span class="mt-value">' + value + '</span></span>';
+    }).join('');
 
   /* setup slideshow */
   slideIndex = 0;
@@ -216,63 +221,67 @@ function closeModal() {
 closeBtn.addEventListener('click', closeModal);
 window.addEventListener('click', function(e) { if (e.target === modal) closeModal(); });
 window.addEventListener('resize', resizeMRdr);
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && modal.style.display === 'flex') closeModal(); });
 
-// ── Ampliar overlay (for collection) ─────────────────────────────────
-// We show a full-screen overlay with either the image, video, or 3D canvas
-var colFsOverlay = (function() {
+// ── Ampliar: simple full-screen lightbox ──────────────────────────────
+var ampOverlay = (function() {
   var el = document.createElement('div');
-  el.style.cssText = 'display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.97);align-items:center;justify-content:center;';
-  var closeB = document.createElement('button');
-  closeB.innerHTML = '&times;';
-  closeB.style.cssText = 'position:absolute;top:16px;right:22px;background:none;border:none;color:#d4af37;font-size:2rem;cursor:pointer;z-index:10;';
-  var content = document.createElement('div');
-  content.style.cssText = 'width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:20px;';
-  el.appendChild(closeB); el.appendChild(content);
-  document.body.appendChild(el);
-  closeB.addEventListener('click', function() { el.style.display='none'; content.innerHTML=''; cancelAnimationFrame(el._fsAnim); if(el._fsRdr){el._fsRdr.dispose();el._fsRdr=null;} });
-  document.addEventListener('keydown', function(e){ if(e.key==='Escape'&&el.style.display==='flex') closeB.click(); });
-  return { el: el, content: content };
+  el.style.cssText = 'display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.96);align-items:center;justify-content:center;';
+  var xb = document.createElement('button');
+  xb.innerHTML = '&times;';
+  xb.style.cssText = 'position:absolute;top:18px;right:22px;background:rgba(212,175,55,.15);border:1.5px solid rgba(212,175,55,.5);color:#d4af37;font-size:2rem;width:44px;height:44px;border-radius:50%;cursor:pointer;z-index:10;display:flex;align-items:center;justify-content:center;line-height:1;';
+  var ct = document.createElement('div');
+  ct.style.cssText = 'width:95%;height:95%;display:flex;align-items:center;justify-content:center;';
+  el.appendChild(xb); el.appendChild(ct); document.body.appendChild(el);
+  xb.addEventListener('click', function() {
+    el.style.display = 'none'; ct.innerHTML = '';
+    cancelAnimationFrame(el._raf);
+    if (el._rdr) { el._rdr.dispose(); el._rdr = null; }
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && el.style.display === 'flex') xb.click();
+  });
+  return { el: el, ct: ct };
 })();
 
 var btnZoom = document.getElementById('btn-zoom');
 if (btnZoom) {
   btnZoom.addEventListener('click', function() {
     if (!currentPiece) return;
-    var ov = colFsOverlay.el, ct = colFsOverlay.content;
-    ct.innerHTML = ''; cancelAnimationFrame(ov._fsAnim); if(ov._fsRdr){ov._fsRdr.dispose();ov._fsRdr=null;}
+    var ov = ampOverlay.el, ct = ampOverlay.ct;
+    ct.innerHTML = ''; cancelAnimationFrame(ov._raf); if (ov._rdr) { ov._rdr.dispose(); ov._rdr = null; }
 
-    // Detect current view from active button
     var activeBtn = document.querySelector('.media-controls button.active');
-    var activeView = activeBtn ? activeBtn.id : 'view-3d';
+    var v = activeBtn ? activeBtn.id : 'view-3d';
 
-    if (activeView === 'view-images') {
+    if (v === 'view-images') {
       var img = document.createElement('img');
       img.src = currentPiece.imagenes[slideIndex] || currentPiece.imagenes[0];
       img.style.cssText = 'max-width:95vw;max-height:95vh;object-fit:contain;border-radius:4px;';
       ct.appendChild(img);
-    } else if (activeView === 'view-video') {
+    } else if (v === 'view-video') {
       if (currentPiece.video) {
         var vid = document.createElement('video');
         vid.src = currentPiece.video; vid.controls = true; vid.autoplay = true; vid.muted = true;
-        vid.style.cssText = 'max-width:95vw;max-height:95vh;';
+        vid.style.cssText = 'max-width:95vw;max-height:92vh;';
         ct.appendChild(vid);
-      } else { ct.innerHTML='<p style="color:#a99e8c;font-size:1rem;">Video no disponible</p>'; }
+      } else { ct.innerHTML = '<p style="color:#a99e8c;font-size:1.1rem;">Video no disponible</p>'; }
     } else {
-      // 3D fullscreen canvas
-      var ovC = document.createElement('canvas');
-      var W2 = Math.round(window.innerWidth*0.96), H2 = Math.round(window.innerHeight*0.96);
-      ovC.width=W2; ovC.height=H2; ovC.style.cssText='width:'+W2+'px;height:'+H2+'px;display:block;border-radius:8px;';
-      ct.appendChild(ovC);
-      var ovRdr = new THREE.WebGLRenderer({canvas:ovC,antialias:true});
-      ovRdr.setSize(W2,H2); ovRdr.setPixelRatio(Math.min(devicePixelRatio,2));
-      ovRdr.toneMapping=THREE.ACESFilmicToneMapping; ovRdr.toneMappingExposure=1.8;
-      ov._fsRdr = ovRdr;
-      var ovCam = new THREE.PerspectiveCamera(38,W2/H2,0.05,80); ovCam.position.set(0,0.5,2.8);
-      var ovCtrl = new (window.OrbitControlsRef || OrbitControls)(ovCam,ovC);
-      ovCtrl.enableDamping=true; ovCtrl.autoRotate=true; ovCtrl.autoRotateSpeed=1.2;
-      ovCtrl.minDistance=0.6; ovCtrl.maxDistance=6; ovCtrl.target.set(0,0.1,0);
-      function ovAnim(){ ov._fsAnim=requestAnimationFrame(ovAnim); ovCtrl.update(); ovRdr.render(mSc,ovCam); }
-      ovAnim();
+      // 3D full window
+      var oc = document.createElement('canvas');
+      var W = Math.round(window.innerWidth * 0.92), H = Math.round(window.innerHeight * 0.90);
+      oc.width = W; oc.height = H; oc.style.cssText = 'width:' + W + 'px;height:' + H + 'px;display:block;border-radius:6px;';
+      ct.appendChild(oc);
+      var or2 = new THREE.WebGLRenderer({ canvas: oc, antialias: true });
+      or2.setSize(W, H); or2.setPixelRatio(Math.min(devicePixelRatio, 2));
+      or2.toneMapping = THREE.ACESFilmicToneMapping; or2.toneMappingExposure = 1.8;
+      ov._rdr = or2;
+      var oc2 = new THREE.PerspectiveCamera(38, W / H, 0.05, 80); oc2.position.set(0, 0.5, 2.8);
+      var oCtrl = new OrbitControls(oc2, oc);
+      oCtrl.enableDamping = true; oCtrl.autoRotate = true; oCtrl.autoRotateSpeed = 1.2;
+      oCtrl.minDistance = 0.6; oCtrl.maxDistance = 6; oCtrl.target.set(0, 0.1, 0);
+      function af() { ov._raf = requestAnimationFrame(af); oCtrl.update(); or2.render(mSc, oc2); }
+      af();
     }
     ov.style.display = 'flex';
   });
