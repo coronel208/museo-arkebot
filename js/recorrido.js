@@ -251,7 +251,8 @@ prog(48, 'Construyendo arco de entrada…');
       box(new THREE.BoxGeometry(0.60, 0.055, 0.60), goldM, x, y, archZ);
     });
   });
-  box(new THREE.BoxGeometry(10.0, 0.38, 0.55), goldM, 0, HH - 0.19, archZ);
+  // Horizontal gold beam — pushed 0.02 in front of pillars to avoid z-fighting at junction
+  box(new THREE.BoxGeometry(10.0, 0.38, 0.53), goldM, 0, HH - 0.19, archZ + 0.02);
 
   // NO archTube (removed)
 
@@ -561,19 +562,20 @@ var murals = [];
   var loader = new THREE.TextureLoader();
   var paintingGroup = new THREE.Group();
 
-  // Gold outer frame
+  // Gold outer frame — furthest back (z=0)
   var goldBorder = new THREE.Mesh(
     new THREE.BoxGeometry(paintingW + 0.30, paintingH + 0.30, 0.10),
     goldM
   );
+  goldBorder.position.z = 0;
   paintingGroup.add(goldBorder);
 
-  // Dark wood stretcher (canvas backing)
+  // Dark wood stretcher — sits in front of gold (z=0.06)
   var woodBorder = new THREE.Mesh(
-    new THREE.BoxGeometry(paintingW + 0.14, paintingH + 0.14, 0.14),
+    new THREE.BoxGeometry(paintingW + 0.14, paintingH + 0.14, 0.10),
     frameMat
   );
-  woodBorder.position.z = 0.02;
+  woodBorder.position.z = 0.06;
   paintingGroup.add(woodBorder);
 
   // Fallback canvas (shows while image loads)
@@ -598,7 +600,7 @@ var murals = [];
     new THREE.BoxGeometry(paintingW, paintingH, CANVAS_DEPTH),
     [sideMat, sideMat, sideMat, sideMat, frontMat, sideMat]
   );
-  painting.position.z = 0.09;
+  painting.position.z = 0.14;  // clearly in front of woodBorder (0.06)
   paintingGroup.add(painting);
 
   // Load real image — replaces fallback when ready
