@@ -76,8 +76,8 @@
     .pm-close { position:absolute; top:10px; right:16px; color:#d4af37; font-size:26px; cursor:pointer; background:none; border:none; z-index:20; line-height:1; transition:transform .2s; }
     .pm-close:hover { transform:scale(1.2); }
     .pm-body   { display:flex; flex:1; min-height:0; }
-    .pm-viewer { flex:2; background:#0c0e13; display:flex; flex-direction:column; position:relative; overflow:hidden; }
-    .pm-viewer-inner { flex:1; position:relative; overflow:hidden; }
+    .pm-viewer { flex:2; background:#0c0e13; position:relative; overflow:hidden; }
+    .pm-viewer-inner { position:absolute; inset:0 0 48px 0; overflow:hidden; }
     #pm-canvas { display:block; width:100%; height:100%; }
 
     #pm-slide-wrap { display:none; position:absolute; inset:0; background:#09090d; overflow:hidden; }
@@ -94,9 +94,9 @@
     .no-media { text-align:center; color:#a99e8c; padding-top:3rem; }
     .no-media i { display:block; font-size:2.5rem; margin-bottom:.8rem; }
 
-    /* Bottom bar identical to collection */
-    .pm-ctrl { flex-shrink:0; height:48px; background:rgba(0,0,0,.80); border-top:1px solid rgba(212,175,55,.18); display:flex; align-items:center; padding:0 12px; gap:8px; z-index:5; }
-    .pm-ctrl button { background:rgba(255,255,255,.07); color:#bbb; border:1px solid rgba(212,175,55,.28); padding:5px 12px; border-radius:14px; cursor:pointer; font-size:.76rem; font-family:'Raleway',sans-serif; display:flex; align-items:center; gap:5px; transition:all .18s; white-space:nowrap; }
+    /* Bottom bar — identical to .media-controls in collection */
+    .pm-ctrl { position:absolute; bottom:0; left:0; right:0; height:48px; background:rgba(0,0,0,0.72); border-top:1px solid rgba(212,175,55,0.18); backdrop-filter:blur(4px); display:flex; align-items:center; padding:0 12px; gap:8px; z-index:6; }
+    .pm-ctrl button { background:rgba(0,0,0,.76); color:#bbb; border:1px solid rgba(212,175,55,.30); padding:5px 13px; border-radius:16px; cursor:pointer; font-size:.77rem; font-family:'Raleway',sans-serif; display:flex; align-items:center; gap:5px; transition:all .18s; }
     .pm-ctrl button:hover { color:#d4af37; }
     .pm-ctrl button.on { background:#d4af37; color:#000; border-color:#d4af37; font-weight:700; }
     .pm-ctrl .pm-right { margin-left:auto; display:flex; gap:6px; }

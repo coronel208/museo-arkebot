@@ -93,13 +93,6 @@ var fl = new THREE.DirectionalLight(0xffffff, 1.2); fl.position.set(-3, 2, -2); 
 var bl = new THREE.DirectionalLight(0xfff8e0, 0.8); bl.position.set(0, -3, 2); mSc.add(bl);  // bottom fill
 var rl = new THREE.PointLight(0xd4af37, 1.2, 14);  rl.position.set(0, 4, -3);  mSc.add(rl);
 
-var ped = new THREE.Mesh(
-  new THREE.CylinderGeometry(0.42, 0.48, 0.09, 32),
-  new THREE.MeshStandardMaterial({ color: 0x1e1810, roughness: 0.7 })
-);
-ped.position.y = -0.5;
-mSc.add(ped);
-
 mCtrl = new OrbitControls(mCam, mCanvas);
 mCtrl.enableDamping   = true;
 mCtrl.autoRotate      = true;
