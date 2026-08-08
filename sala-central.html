@@ -1048,6 +1048,39 @@ var followSpot = new THREE.SpotLight(0xfff8e8, 6.0, 12, Math.PI/5, 0.5, 1.5);
 followSpot.target = new THREE.Object3D();
 scene.add(followSpot); scene.add(followSpot.target);
 
+// ── COUNTDOWN 5s ──────────────────────────────────────────────────────────────
+(function(){
+  var btn = document.getElementById('btn-start');
+  var prompt = document.getElementById('start-prompt');
+  if (!btn || !prompt) return;
+  var req = document.createElement('div');
+  req.style.cssText = 'max-width:340px;width:90%;background:rgba(212,175,55,.07);border:1px solid rgba(212,175,55,.28);border-radius:10px;padding:.9rem 1.2rem;text-align:left;margin:.2rem auto 0;';
+  req.innerHTML = '<div style="color:#d4af37;font-size:.74rem;font-weight:700;margin-bottom:.5rem;"><i class="fas fa-exclamation-triangle"></i>&nbsp; Requisitos recomendados</div>'
+    + '<ul style="color:#a99e8c;font-size:.78rem;line-height:1.85;padding-left:1.1rem;margin:0;">'
+    + '<li>WiFi o datos móviles estables</li>'
+    + '<li>Dispositivo fabricado desde 2019</li>'
+    + '<li>Navegador actualizado (Chrome, Safari)</li>'
+    + '<li>En celular: modo horizontal recomendado</li>'
+    + '</ul>';
+  prompt.insertBefore(req, btn);
+  btn.disabled = true;
+  btn.style.opacity = '0.5';
+  btn.style.cursor = 'not-allowed';
+  var sec = 5;
+  var origHTML = btn.innerHTML;
+  btn.innerHTML = '<i class="fas fa-clock"></i>&nbsp; Espera ' + sec + 's&hellip;';
+  var t = setInterval(function(){
+    sec--;
+    if (sec <= 0) {
+      clearInterval(t);
+      btn.disabled = false; btn.style.opacity = ''; btn.style.cursor = '';
+      btn.innerHTML = origHTML;
+    } else {
+      btn.innerHTML = '<i class="fas fa-clock"></i>&nbsp; Espera ' + sec + 's&hellip;';
+    }
+  }, 1000);
+})();
+
 // ── INPUT ─────────────────────────────────────────────────────────────────────
 var _isMobSC = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth <= 900;
 var yaw=0, pitch=0.30, keys={}, locked=false, started=false;
@@ -1055,13 +1088,15 @@ var modalOpen=false;
 
 document.addEventListener('pointerlockchange', function(){
   locked = !!document.pointerLockElement;
-  hudEl.style.display = locked ? 'block' : 'none';
-  crossEl.style.display = locked ? 'block' : 'none';
-  if(locked){
-    resumeOverlay.style.display = 'none';
-    pauseEl.style.display = 'none';
-  } else if(started && !modalOpen){
-    pauseEl.style.display = 'flex';
+  if(!_isMobSC){
+    hudEl.style.display = locked ? 'block' : 'none';
+    crossEl.style.display = locked ? 'block' : 'none';
+    if(locked){
+      resumeOverlay.style.display = 'none';
+      pauseEl.style.display = 'none';
+    } else if(started && !modalOpen){
+      pauseEl.style.display = 'flex';
+    }
   }
 });
 document.addEventListener('mousemove', function(e){
@@ -1094,24 +1129,32 @@ function _enterFs(){
 }
 document.getElementById('btn-start').addEventListener('click', function(){
   started=true; startEl.style.display='none';
-  if(!document.fullscreenElement) _enterFs();
-  else if(!_isMobSC) canvas.requestPointerLock();
-  if(_isMobSC) { hudEl.style.display='none'; crossEl.style.display='block'; }
+  _enterFs();
+  if(!_isMobSC) {
+    // Direct user-gesture: request pointer lock immediately
+    canvas.requestPointerLock();
+  } else {
+    // Mobile: show crosshair, hide hud
+    hudEl.style.display='none';
+    crossEl.style.display='block';
+  }
 });
 document.getElementById('pd-continue').addEventListener('click', function(){
   pauseEl.style.display='none';
-  if(!document.fullscreenElement) _enterFs();
-  else if(!_isMobSC) canvas.requestPointerLock();
+  _enterFs();
+  if(!_isMobSC) canvas.requestPointerLock();
+  else { crossEl.style.display='block'; }
 });
-document.addEventListener('fullscreenchange', function(){
+function _fsChange(){
   var inFs = !!document.fullscreenElement;
   var navEl = document.getElementById('top-nav');
   navEl.style.display = inFs ? 'none' : '';
   canvas.style.top = inFs ? '0' : NAV_H + 'px';
   resize();
-  if(inFs && started && !_isMobSC && !document.pointerLockElement) canvas.requestPointerLock();
   if(inFs && started && _isMobSC) crossEl.style.display='block';
-});
+}
+document.addEventListener('fullscreenchange', _fsChange);
+document.addEventListener('webkitfullscreenchange', _fsChange);
 
 // Stuck detector: desktop only
 setInterval(function(){
