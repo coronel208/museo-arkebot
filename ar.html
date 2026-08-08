@@ -256,12 +256,16 @@
     camera-controls
     auto-rotate
     ar
-    ar-modes="webxr scene-viewer quick-look"
+    ar-modes="scene-viewer webxr quick-look"
     ar-scale="auto"
+    xr-environment
     shadow-intensity="1"
     shadow-softness="0.5"
     exposure="1.1"
     style="display:none;">
+  <button slot="ar-button" style="background:#d4af37;color:#000;border:none;padding:.55rem 1.4rem;border-radius:22px;font-size:.85rem;font-weight:700;cursor:pointer;position:absolute;bottom:130px;right:20px;display:flex;align-items:center;gap:.5rem;box-shadow:0 4px 20px rgba(212,175,55,.45);">
+    <i class="fas fa-cube"></i> Ver en AR
+  </button>
   </model-viewer>
 
   <!-- HINT DE AR -->
@@ -341,9 +345,11 @@
 
     /* ── Pieza con modelo .glb ────────────────────────────────────── */
     } else {
+      var _CDN = 'https://cdn.jsdelivr.net/gh/coronel208/museo.seminario@main/';
+      var _modelSrc = piece.modelUrl.startsWith('http') ? piece.modelUrl : _CDN + piece.modelUrl;
       mv.style.display = 'block';
-      mv.setAttribute('src', piece.modelUrl);
-      if (piece.modelUrlIos) mv.setAttribute('ios-src', piece.modelUrlIos);
+      mv.setAttribute('src', _modelSrc);
+      if (piece.modelUrlIos) mv.setAttribute('ios-src', piece.modelUrlIos.startsWith('http') ? piece.modelUrlIos : _CDN + piece.modelUrlIos);
 
       fillInfo(piece);
 
@@ -382,7 +388,7 @@
             mv.setAttribute('src', '');
             setTimeout(function() {
               isResetting = false;
-              mv.setAttribute('src', piece.modelUrl);
+              mv.setAttribute('src', _modelSrc);
               startLoadTimeout();
             }, 300);
           });

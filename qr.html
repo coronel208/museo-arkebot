@@ -7,6 +7,10 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <!-- QRCode.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <!-- Three.js importmap — needed because pieces-data.js imports THREE -->
+  <script type="importmap">
+    {"imports":{"three":"https://unpkg.com/three@0.158.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.158.0/examples/jsm/"}}
+  </script>
 
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Raleway:wght@300;400;500;600&display=swap');
@@ -70,6 +74,12 @@
     .nav-overlay.open { display:block; }
 
     @media (max-width:1024px) { .nav-toggle { display:flex; } }
+    @media (max-height:500px) and (orientation:landscape) {
+      .nav-toggle { display:none !important; }
+      .nav-menu { position:static !important; transform:none !important; flex-direction:row !important; background:none !important; box-shadow:none !important; width:auto !important; height:auto !important; padding:0 !important; border:none !important; }
+      .nav-menu li { width:auto !important; }
+      .nav-menu a { display:inline !important; padding:.5rem .6rem !important; font-size:.78rem !important; border:none !important; }
+    }
     @media (max-width:768px) {
       .navbar { padding:.75rem 1rem; backdrop-filter:none; -webkit-backdrop-filter:none; }
       .nav-menu {
@@ -259,7 +269,7 @@
     <ul class="nav-menu">
       <li><a href="index.html">Inicio</a></li>
       <li><a href="coleccion.html">Colección</a></li>
-      <li><a href="sala-central.html">Lobby</a></li>
+      <li><a href="sala-central.html">Recorrido Virtual</a></li>
       <li><a href="sobre-nosotros.html">Sobre Nosotros</a></li>
       <li><a href="qr.html" class="active" title="Generar QR"><i class="fas fa-qrcode"></i></a></li>
     </ul>
@@ -275,16 +285,7 @@
     </div>
 
     <!-- CONFIGURACIÓN -->
-    <div class="config-box">
-      <label>
-        <span><i class="fas fa-link"></i> &nbsp;URL base del sitio</span>
-        <input type="text" id="base-url"
-          placeholder="https://coronel208.github.io/museo.seminario"
-          value="https://coronel208.github.io/museo.seminario">
-      </label>
-      <button class="btn-gold" onclick="generarTodos()">
-        <i class="fas fa-qrcode"></i> Generar QR
-      </button>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:1.5rem;">
       <button class="btn-outline" onclick="window.print()">
         <i class="fas fa-print"></i> Imprimir
       </button>
@@ -302,12 +303,12 @@
   <script type="module">
     import { PIECES } from './js/pieces-data.js';
     window.MUSEUM_CATALOG = PIECES;
-    if (typeof generarTodos === 'function') generarTodos();
+    generarTodos();
   </script>
 
   <script>
     function generarTodos() {
-      var baseUrl = (document.getElementById('base-url').value || '').replace(/\/$/, '');
+      var baseUrl = location.href.replace(/\/qr\.html.*$/, '').replace(/\/$/, '');
       var grid    = document.getElementById('qr-grid');
       var empty   = document.getElementById('empty-msg');
 

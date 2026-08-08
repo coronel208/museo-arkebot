@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Lobby · Museo Seminario</title>
+  <title>Recorrido Virtual · Museo Seminario</title>
   <link rel="stylesheet" href="css/estilo.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <script type="importmap">
@@ -42,10 +42,9 @@
     .key { width:30px; height:30px; border-radius:5px; background:#1e2025; border:1px solid rgba(212,175,55,.4); color:#d4af37; font-size:.65rem; font-weight:600; display:flex; align-items:center; justify-content:center; }
     .key.w { width:65px; }
     #hud { display:none; position:fixed; bottom:22px; left:22px; color:#e0d0a0; background:rgba(0,0,0,.62); padding:7px 16px; border-radius:26px; font-size:.8rem; border:1px solid rgba(212,175,55,.25); pointer-events:none; z-index:300; }
-    #crosshair { display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); width:28px; height:28px; pointer-events:none; z-index:300; filter:drop-shadow(0 0 3px #000) drop-shadow(0 0 6px #000); }
-    #crosshair::before,#crosshair::after { content:''; position:absolute; background:rgba(255,255,255,.95); }
-    #crosshair::before { width:2px; height:28px; left:13px; top:0; }
-    #crosshair::after  { width:28px; height:2px; top:13px; left:0; }
+    #crosshair { display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); width:28px; height:28px; pointer-events:none; z-index:9999; filter:drop-shadow(0 0 3px #000) drop-shadow(0 0 6px #000); }
+    #ch-v { position:absolute; width:2px; height:28px; left:13px; top:0; background:rgba(255,255,255,.95); }
+    #ch-h { position:absolute; width:28px; height:2px; top:13px; left:0; background:rgba(255,255,255,.95); }
     #hint-label { display:none; position:fixed; bottom:72px; left:50%; transform:translateX(-50%); background:rgba(8,10,14,0.92); border:2px solid rgba(212,175,55,0.80); color:#fff; padding:8px 20px; border-radius:22px; font-size:.88rem; font-weight:600; pointer-events:none; white-space:nowrap; z-index:300; }
     @media(pointer:coarse){ #hud{display:none!important;} }
     .nb-toggle { display:none; flex-direction:column; justify-content:center; align-items:center; gap:5px; background:none; border:1px solid rgba(212,175,55,.30); border-radius:6px; padding:7px 9px; cursor:pointer; -webkit-tap-highlight-color:transparent; z-index:10001; }
@@ -93,7 +92,7 @@
   </div>
   <div class="ls-title"><h2>MUSEO SEMINARIO</h2><p>Diocesano de Cristo Sacerdote</p></div>
   <div class="ls-track"><div id="ls-bar"></div></div>
-  <div id="ls-status">Preparando lobby…</div>
+  <div id="ls-status">Preparando sala…</div>
   <div style="color:#4a4540;font-size:.66rem;text-align:center;letter-spacing:.03em;max-width:260px;line-height:1.65;">Si en algún momento no puedes moverte,<br>recarga la página (F5) para comenzar de nuevo.</div>
 </div>
 
@@ -103,7 +102,7 @@
   <ul class="nb-menu">
     <li><a href="index.html">Inicio</a></li>
     <li><a href="coleccion.html">Colección</a></li>
-    <li><a href="sala-central.html" class="active">Lobby</a></li>
+    <li><a href="sala-central.html" class="active">Recorrido Virtual</a></li>
     <li><a href="sobre-nosotros.html">Sobre Nosotros</a></li>
     <li><a href="qr.html" title="QR"><i class="fas fa-qrcode"></i></a></li>
   </ul>
@@ -112,7 +111,7 @@
 <canvas id="gl-canvas"></canvas>
 
 <div id="start-prompt">
-  <h2>Lobby</h2>
+  <h2>Sala Central</h2>
   <div class="ctrl-row" id="sp-desktop">
     <div class="ctrl-col">
       <div class="key-row"><div class="key">W</div></div>
@@ -136,7 +135,7 @@
 </div>
 
 <div id="hud"><i class="fas fa-lock"></i> ESC para pausar · Apunta a un panel y haz clic</div>
-<div id="crosshair"></div>
+<div id="crosshair"><div id="ch-v"></div><div id="ch-h"></div></div>
 <div id="hint-label"><i class="fas fa-hand-pointer"></i> Clic para leer</div>
 <div id="joystick-zone"><div id="joy-thumb"></div></div>
 <div id="landscape-prompt">
@@ -235,7 +234,7 @@
   window._lsReady = function(){
     clearInterval(lsInt);
     bar.style.width = '100%';
-    status.textContent = 'Listo. Bienvenido al Lobby.';
+    status.textContent = 'Listo. Bienvenido.';
     var ls = document.getElementById('loading-screen');
     setTimeout(function(){
       ls.style.opacity = '0'; ls.style.transition = 'opacity .5s';
@@ -274,8 +273,9 @@ var resumeOverlay = document.getElementById('resume-overlay');
 
 // ── RENDERER ─────────────────────────────────────────────────────────────────
 var canvas = document.getElementById('gl-canvas');
-var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+var _scMob = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth <= 900;
+var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: !_scMob, powerPreference: 'high-performance' });
+renderer.setPixelRatio(_scMob ? Math.min(window.devicePixelRatio, 1.0) : Math.min(window.devicePixelRatio, 1.5));
 var NAV_H = 52;
 function resize(){
   var navEl = document.getElementById('top-nav');
@@ -396,6 +396,34 @@ function makePanelTex(title, bodyLines){
   ctx.fillStyle='rgba(212,175,55,0.4)'; ctx.fillRect(60,ty+4,392,2); ty+=20;
   ctx.fillStyle='#d0c8a8'; ctx.font='18px Raleway,sans-serif';
   bodyLines.forEach(function(bl){ctx.fillText(bl,256,ty);ty+=28;});
+  return new THREE.CanvasTexture(cvs);
+}
+
+function makeInfoPanelTex(title, firstPara){
+  var cvs=document.createElement('canvas'); cvs.width=512; cvs.height=384;
+  var ctx=cvs.getContext('2d');
+  ctx.fillStyle='#0d0b08'; ctx.fillRect(0,0,512,384);
+  ctx.strokeStyle='rgba(212,175,55,0.75)'; ctx.lineWidth=3; ctx.strokeRect(10,10,492,364);
+  ctx.strokeStyle='rgba(212,175,55,0.22)'; ctx.lineWidth=1; ctx.strokeRect(17,17,478,350);
+  // title
+  ctx.textAlign='center'; ctx.fillStyle='#d4af37';
+  ctx.font='bold 26px Georgia,serif';
+  var titleShort=title.length>24?title.substring(0,22)+'…':title;
+  ctx.fillText(titleShort,256,52);
+  ctx.fillStyle='rgba(212,175,55,0.45)'; ctx.fillRect(60,66,392,2);
+  // word-wrap first paragraph
+  ctx.fillStyle='#ccc5b5'; ctx.font='16px sans-serif';
+  var words=firstPara.split(' '), lines=[], cur='';
+  words.forEach(function(w){
+    var test=cur?cur+' '+w:w;
+    if(ctx.measureText(test).width>452){lines.push(cur);cur=w;}else{cur=test;}
+  });
+  if(cur) lines.push(cur);
+  var ty=95;
+  lines.slice(0,7).forEach(function(l){ctx.fillText(l,256,ty);ty+=26;});
+  // "click to read more"
+  ctx.fillStyle='rgba(212,175,55,0.80)'; ctx.font='italic 15px Georgia,serif';
+  ctx.fillText('· Clic para leer más ·',256,360);
   return new THREE.CanvasTexture(cvs);
 }
 
@@ -557,26 +585,24 @@ var PANELS = [
     { title:'Cultura Malagana', lines:['La civilización precolombina','que habitó el Valle del','Cauca. Pulsa para conocer','su historia.'], isMalagana:true }
   ],
   // wall 1
-  [ { title:'El Seminario Diocesano', lines:['Formando sacerdotes y','custodiando el patrimonio','cultural de Palmira','desde sus inicios.'],
-      modal:{ h:'El Seminario Diocesano de Cristo Sacerdote', p:['El Seminario Diocesano de Cristo Sacerdote de Palmira es una institución de formación sacerdotal de la Diócesis de Palmira. Además de su misión educativa y espiritual, custodia una importante colección de piezas arqueológicas precolombinas.','Esta colección es parte del compromiso de la institución con la memoria histórica y cultural del pueblo de Palmira y el Valle del Cauca.'] } },
-    { title:'Colección Malagana', lines:['Cerámica, figuras y vasijas','de la cultura Malagana,','patrimonio arqueológico','del Valle del Cauca.'], isMalagana:true }
+  [ { title:'Seminario Diocesano', lines:['Institución de formación','sacerdotal al servicio','de la Diócesis','de Palmira.'], noClick:true },
+    { title:'El Seminario Diocesano', lines:['Más de un siglo de','formación sacerdotal','al servicio del pueblo','de Palmira. Pulsa.'],
+      modal:{ h:'El Seminario Diocesano de Cristo Sacerdote', p:['El Seminario Diocesano de Cristo Sacerdote de Palmira es una institución de formación sacerdotal de la Diócesis de Palmira. Desde sus inicios ha formado generaciones de sacerdotes comprometidos con la fe y la cultura del Valle del Cauca.','Además de su misión espiritual y educativa, el Seminario custodia una valiosa colección arqueológica prehispánica que constituye un testimonio vivo de las civilizaciones que habitaron esta región antes de la llegada de los españoles.','Esta colección es parte del compromiso de la institución con la memoria histórica y cultural del pueblo de Palmira y el Valle del Cauca, y es el corazón de este museo virtual.'] } }
   ],
   // wall 2
-  [ { title:'Los Creadores', lines:['Este museo virtual fue','creado para preservar','y difundir el patrimonio','cultural de la región.'],
-      modal:{ h:'Los Creadores del Museo Virtual', p:['Este museo virtual fue desarrollado como proyecto de preservación y difusión del patrimonio arqueológico custodiado por el Seminario Diocesano de Cristo Sacerdote de Palmira.','El proyecto busca acercar la colección prehispánica a toda la comunidad mediante tecnología 3D interactiva, permitiendo explorar las piezas arqueológicas de manera inmersiva y educativa.'] } },
-    { title:'Cultura Malagana', lines:['Pulsa para conocer la','historia de la cultura','Malagana y sus piezas','del Valle del Cauca.'], isMalagana:true }
+  [ { title:'Fundación · 1952', lines:['La Diócesis de Palmira','funda el Seminario','para la formación','sacerdotal.'], noClick:true },
+    { title:'Fundación del Seminario', lines:['La Diócesis de Palmira','fue erigida en 1952.','El Seminario nació','para formar sacerdotes.'],
+      modal:{ h:'Fundación del Seminario Diocesano', p:['La Diócesis de Palmira fue erigida el 20 de abril de 1952 por la Santa Sede, separándose de la Arquidiócesis de Cali. Desde sus primeros años, la nueva diócesis tuvo entre sus prioridades la formación de sacerdotes propios para el Valle del Cauca.','El Seminario Diocesano de Cristo Sacerdote fue fundado para dar respuesta a esa necesidad. Las primeras décadas estuvieron marcadas por el esfuerzo de construir una comunidad académica y espiritual sólida, donde generaciones de jóvenes vocacionistas llegaron de todos los rincones del Valle del Cauca para formarse como ministros de la Iglesia Católica.'] } }
   ],
   // wall 3
-  [ { title:'Parque Bolívar', lines:['El corazón de Palmira,','ciudad que custodia el','legado de la cultura','Malagana.'],
-      modal:{ h:'Palmira, Ciudad Señora del Valle', p:['Palmira, conocida como la "Ciudad Señora" del Valle del Cauca, fue hogar de la cultura Malagana por más de 3.200 años. El hallazgo de 1992 en la Hacienda Malagana reveló centenares de piezas arqueológicas de excepcional valor.','La ciudad alberga el Museo Arqueológico de Palmira (MAP) y el Seminario Diocesano de Cristo Sacerdote, dos instituciones comprometidas con la preservación del patrimonio cultural prehispánico.'] } },
-    { title:'Festival Malagana', lines:['Palmira celebra su','herencia precolombina','con festivales anuales','de la cultura Malagana.'],
-      modal:{ h:'Festival de la Cultura Malagana', p:['Cada año Palmira conmemora el hallazgo arqueológico de 1992 con el Festival de la Cultura Malagana. Este evento rinde tributo a la civilización que habitó estas tierras y mantiene viva la memoria ancestral del pueblo palmireño.','El festival incluye exposiciones, danzas y actividades educativas que acercan el patrimonio cultural precolombino a toda la comunidad.'] } }
+  [ { title:'Misión Educativa', lines:['Formando sacerdotes','comprometidos con la fe,','la cultura y el pueblo','de Palmira.'], noClick:true },
+    { title:'Misión Educativa', lines:['El Seminario ha formado','cientos de sacerdotes','al servicio de la','Diócesis de Palmira.'],
+      modal:{ h:'La Misión Educativa y Espiritual', p:['El Seminario Diocesano de Cristo Sacerdote ha formado a cientos de sacerdotes que hoy sirven en las parroquias, colegios y misiones de la Diócesis de Palmira y de Colombia. Su plan de estudios integra la teología, la filosofía y las humanidades con una profunda experiencia espiritual y comunitaria.','A lo largo de su historia, el Seminario ha sido también un espacio de encuentro cultural. Conciertos, conferencias y exposiciones han reunido a la comunidad palmireña en torno al arte y el pensamiento, consolidando al Seminario como un referente cultural de la región.'] } }
   ],
   // wall 4
-  [ { title:'Catedral de Palmira', lines:['La Catedral Nuestra Señora','del Palmar, patrimonio','arquitectónico del centro','histórico de Palmira.'],
-      modal:{ h:'Centro Histórico de Palmira', p:['El centro histórico de Palmira conserva una rica arquitectura que refleja siglos de desarrollo cultural y espiritual. La catedral es uno de los edificios más emblemáticos de la ciudad.','Palmira es sede de instituciones educativas y religiosas que han contribuido durante generaciones a la formación cultural e intelectual del Valle del Cauca.'] } },
-    { title:'Legado Malagana', lines:['El sitio arqueológico','Malagana, hallado en 1992,','transformó el conocimiento','de la historia regional.'],
-      modal:{ h:'El Legado Arqueológico Malagana', p:['En octubre de 1992, un tractor descubrió accidentalmente en la Hacienda Malagana un extraordinario yacimiento arqueológico, considerado el hallazgo más importante del suroccidente colombiano del siglo XX.','Las piezas encontradas — orfebrería, cerámica, objetos líticos y óseos — revelaron una civilización sofisticada que habitó el Valle del Cauca entre el 200 a.C. y el 400 d.C.'] } }
+  [ { title:'Patrimonio Cultural', lines:['El Seminario custodia','piezas arqueológicas','precolombinas del','Valle del Cauca.'], noClick:true },
+    { title:'Patrimonio Arqueológico', lines:['Una colección única de','cerámica prehispánica','donada por familias','de Palmira.'],
+      modal:{ h:'Custodia del Patrimonio Arqueológico', p:['Durante décadas, el Seminario Diocesano de Cristo Sacerdote ha recibido en custodia piezas arqueológicas precolombinas donadas por familias de Palmira y el Valle del Cauca. Esta colección, integrada principalmente por cerámicas de las culturas Malagana, Calima y Tumaco-La Tolita, es un testimonio invaluable de las civilizaciones que habitaron estas tierras.','La apertura de este Museo Virtual representa un hito en la misión cultural del Seminario: poner al alcance de todos, de manera inmersiva y accesible, el patrimonio arqueológico que durante años ha sido custodiado con amor y dedicación por la institución y su comunidad.'] } }
   ]
 ];
 
@@ -726,7 +752,9 @@ for(var wi=0;wi<5;wi++){
   [-1, 1].forEach(function(sign, si){
     var pdef = wallPanels[si];
     var cx = sign * (DOOR_W/2 + COL_W + PANEL_W/2 + 0.15);
-    var tex = pdef.isProx ? makeProxTex(pdef.title) : makePanelTex(pdef.title, pdef.lines);
+    var tex = pdef.isMalagana ? makeProxTex(pdef.title)
+             : (pdef.modal ? makeInfoPanelTex(pdef.title, pdef.modal.p[0])
+             : makePanelTex(pdef.title, pdef.lines));
     var pmat = new THREE.MeshStandardMaterial({
       map: tex, roughness: 0.55, metalness: 0,
       emissive: new THREE.Color(0x080808), emissiveIntensity: 1.8
@@ -743,7 +771,7 @@ for(var wi=0;wi<5;wi++){
     var pmesh = new THREE.Mesh(new THREE.PlaneGeometry(PANEL_W, PANEL_H), pmat);
     pmesh.position.set(cx, 3.8, WT/2+0.02);
     grp.add(pmesh);
-    interactables.push({mesh: pmesh, def: pdef});
+    if(!pdef.noClick) interactables.push({mesh: pmesh, def: pdef});
 
     // gold frame
     var fw = PANEL_W+0.08, fh = PANEL_H+0.08;
@@ -767,14 +795,10 @@ tl.load('assets/logo.jpg', function(t){
   }
 });
 var _photoEntries = [
-  ['images/seminario-exterior.jpeg', '_photoMat_w1l'],
-  ['images/seminario-jardin.jpeg',   '_photoMat_w1r'],
-  ['images/seminario-capilla.jpeg',  '_photoMat_w2l'],
-  ['images/seminario-jardin.jpeg',   '_photoMat_w2r'],
-  ['images/seminario-exterior.jpeg', '_photoMat_w3l'],
-  ['images/seminario-capilla.jpeg',  '_photoMat_w3r'],
-  ['images/seminario-jardin.jpeg',   '_photoMat_w4l'],
-  ['images/seminario-exterior.jpeg', '_photoMat_w4r']
+  ['images/seminario-exterior.jpeg', '_photoMat_w1l'],  // sala 2 — foto exterior (no click)
+  ['images/seminario-exterior.jpeg', '_photoMat_w2l'],  // sala 3 — fundación (no click)
+  ['images/seminario-capilla.jpeg',  '_photoMat_w3l'],  // sala 4 — misión (no click)
+  ['images/seminario-jardin.jpeg',   '_photoMat_w4l']   // sala 5 — patrimonio (no click)
 ];
 _photoEntries.forEach(function(entry){
   tl.load(entry[0], function(t){
@@ -1059,6 +1083,14 @@ function _enterFs(){
   var el=document.documentElement;
   var fsReq=el.requestFullscreen||el.webkitRequestFullscreen||el.mozRequestFullScreen;
   if(fsReq&&!document.fullscreenElement) fsReq.call(el).catch(function(){});
+  var navEl=document.getElementById('top-nav');
+  if(navEl) navEl.style.display='none';
+  document.body.style.overflow='hidden';
+  window.scrollTo(0,1);
+  setTimeout(function(){
+    canvas.style.top='0';
+    resize();
+  },80);
 }
 document.getElementById('btn-start').addEventListener('click', function(){
   started=true; startEl.style.display='none';

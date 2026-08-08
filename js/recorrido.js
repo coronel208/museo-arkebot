@@ -89,7 +89,7 @@ gl.style.height = VH() + 'px';
 var isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth <= 768;
 var renderer = new THREE.WebGLRenderer({ canvas: gl, antialias: !isMobile, powerPreference: 'high-performance' });
 renderer.setSize(VW(), VH());
-renderer.setPixelRatio(isMobile ? Math.min(window.devicePixelRatio, 0.5) : Math.min(window.devicePixelRatio, 1.5));
+renderer.setPixelRatio(isMobile ? Math.min(window.devicePixelRatio, 1.0) : Math.min(window.devicePixelRatio, 1.5));
 renderer.shadowMap.enabled = false;  // shadows off — ambient+point lights do the job cheaply
 renderer.toneMapping        = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.05;
@@ -559,9 +559,10 @@ LAYOUT.forEach(function(cfg) {
 
 // ── Mobile proximity loader: load real GLB when player approaches ────
 var _mobActiveLoads = 0;
+var _isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
 function _mobProximityCheck() {
   for (var _pi = 0; _pi < LAYOUT.length; _pi++) {
-    if (_mobActiveLoads >= 2) break;
+    if (_mobActiveLoads >= (_isIOS ? 1 : 2)) break;
     var _pc = LAYOUT[_pi];
     if (_pc._mobLoaded || _pc._mobLoading || !_pc.piece || !_pc.piece.modelUrl) continue;
     var _dx = camera.position.x - _pc.x, _dz = camera.position.z - _pc.z;
@@ -799,19 +800,31 @@ if (isMobile) {
   if (spMobile)  spMobile.style.display  = 'block';
 }
 
-// Helper: request fullscreen fire-and-forget, then lock immediately.
-// requestFullscreen is async but pointer lock MUST be in the sync user-gesture call.
+// Helper: request fullscreen + hide navbar (iOS fallback — fullscreen API unsupported on iOS Safari)
 function _enterFs() {
   var el = document.documentElement;
   var fsReq = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen;
   if (fsReq && !document.fullscreenElement) fsReq.call(el).catch(function(){});
+  var nav = document.getElementById('top-nav');
+  if (nav) nav.style.display = 'none';
+  document.body.style.overflow = 'hidden';
+  // iOS: scroll to dismiss address bar, then size canvas to full available height
+  window.scrollTo(0, 1);
+  setTimeout(function() {
+    var h = window.innerHeight;
+    gl.style.top = '0';
+    gl.style.height = h + 'px';
+    renderer.setSize(VW(), h);
+    camera.aspect = VW() / h;
+    camera.updateProjectionMatrix();
+  }, 80);
 }
 
 // Mobile interact button — always visible on right side after start
 var _mobInteractBtn = null;
 if (isMobile) {
   _mobInteractBtn = document.createElement('button');
-  _mobInteractBtn.style.cssText = 'display:none;position:fixed;bottom:28%;right:18px;'
+  _mobInteractBtn.style.cssText = 'display:none;position:fixed;bottom:calc(28% + env(safe-area-inset-bottom,0px));right:max(18px,env(safe-area-inset-right,0px));'
     + 'width:64px;height:64px;border-radius:50%;'
     + 'background:rgba(0,0,0,0.60);border:2.5px solid rgba(212,175,55,0.40);color:rgba(212,175,55,0.40);'
     + 'font-size:1.4rem;z-index:60;cursor:pointer;touch-action:manipulation;'
@@ -886,6 +899,45 @@ document.addEventListener('keyup', function(e) {
   if (e.code==='KeyA'||e.code==='ArrowLeft')  kb.a = false;
   if (e.code==='KeyD'||e.code==='ArrowRight') kb.d = false;
 });
+document.addEventListener('pointerlockchange', function() {
+  if (!document.pointerLockElement) { kb.w = kb.s = kb.a = kb.d = false; }
+});
+
+/* ── Requirements countdown (5 s before entry allowed) ──────────── */
+(function(){
+  var btn = document.getElementById('btn-start');
+  var prompt = document.getElementById('start-prompt');
+  if (!btn || !prompt) return;
+  // Requirements notice
+  var req = document.createElement('div');
+  req.style.cssText = 'max-width:360px;width:90%;background:rgba(212,175,55,.07);border:1px solid rgba(212,175,55,.28);border-radius:10px;padding:.9rem 1.2rem;text-align:left;margin:.2rem auto 0;';
+  req.innerHTML = '<div style="color:#d4af37;font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem;"><i class="fas fa-exclamation-triangle"></i>&nbsp; Requisitos recomendados</div>'
+    + '<ul style="color:#a99e8c;font-size:.78rem;line-height:1.85;padding-left:1.1rem;margin:0;">'
+    + '<li>WiFi o datos móviles estables</li>'
+    + '<li>Dispositivo fabricado desde 2019</li>'
+    + '<li>Navegador actualizado (Chrome, Safari)</li>'
+    + '<li>En celular: modo horizontal recomendado</li>'
+    + '</ul>';
+  prompt.insertBefore(req, btn);
+  btn.disabled = true;
+  btn.style.opacity = '0.5';
+  btn.style.cursor = 'not-allowed';
+  var sec = 5;
+  var origHTML = btn.innerHTML;
+  btn.innerHTML = '<i class="fas fa-clock"></i>&nbsp; Espera ' + sec + 's&hellip;';
+  var t = setInterval(function(){
+    sec--;
+    if (sec <= 0) {
+      clearInterval(t);
+      btn.disabled = false;
+      btn.style.opacity = '';
+      btn.style.cursor = '';
+      btn.innerHTML = origHTML;
+    } else {
+      btn.innerHTML = '<i class="fas fa-clock"></i>&nbsp; Espera ' + sec + 's&hellip;';
+    }
+  }, 1000);
+})();
 
 /* ── Mobile Joystick + Touch-look (multi-touch) ──────────────────── */
 var mb = { w: false, s: false, a: false, d: false };
@@ -1440,7 +1492,7 @@ function tick(now) {
   }
 }
 
-_flushBatch();
+try { _flushBatch(); } catch(e) { console.warn('batch flush error', e); }
 if (glbPending <= 0) hideLs();
 // Safety: if GLBs hang (Draco decoder timeout, network, etc.), force-hide after 12s
 setTimeout(function(){ if(lsEl && lsEl.style.display !== 'none') hideLs(); }, 12000);
