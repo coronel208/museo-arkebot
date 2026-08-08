@@ -489,11 +489,11 @@ LAYOUT.forEach(function(cfg) {
   glassMesh.userData.pieceId = piece.id;
   scene.add(glassMesh);
 
-  // Artifact — procedural proxy, GLB replaces it when loaded/approached
+  // Artifact group: placeholder only on desktop; mobile loads on proximity
   var artifact = new THREE.Group();
   artifact.position.set(x, piece.restY !== undefined ? piece.restY : 1.19, z);
   artifact.userData.pieceId = piece.id;
-  artifact.add(buildArtifact(piece, 0.62));
+  if (!isMobile) artifact.add(buildArtifact(piece, 0.62));
   scene.add(artifact);
   cfg._artifact = artifact;
 
@@ -557,16 +557,46 @@ LAYOUT.forEach(function(cfg) {
   interactables.push({ glassMesh: glassMesh, hlRing: hlRing, artifact: artifact, pieceId: piece.id });
 });
 
-// ── Mobile proximity loader: load real GLB when player approaches ────
+// ── Mobile proximity loader: load/dispose GLBs by distance ──────────
 var _mobActiveLoads = 0;
 var _isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+var MAX_MOB_CONCURRENT = _isIOS ? 1 : 2;
+var LOAD_DIST = 8.5, UNLOAD_DIST = 14;
+
+function _disposeGltfObj(obj) {
+  obj.traverse(function(child) {
+    if (!child.isMesh) return;
+    if (child.geometry) child.geometry.dispose();
+    var mat = child.material;
+    if (!mat) return;
+    ['map','normalMap','roughnessMap','metalnessMap','emissiveMap','aoMap','envMap'].forEach(function(k) {
+      if (mat[k]) { mat[k].dispose(); }
+    });
+    mat.dispose();
+  });
+}
+
 function _mobProximityCheck() {
+  // Pass 1: dispose far models to free memory
   for (var _pi = 0; _pi < LAYOUT.length; _pi++) {
-    if (_mobActiveLoads >= (_isIOS ? 1 : 2)) break;
+    var _pc = LAYOUT[_pi];
+    if (!_pc._mobLoaded || _pc._artifact.children.length === 0) continue;
+    var _dx = camera.position.x - _pc.x, _dz = camera.position.z - _pc.z;
+    if (Math.sqrt(_dx*_dx + _dz*_dz) > UNLOAD_DIST) {
+      var _m = _pc._artifact.children[0];
+      _pc._artifact.remove(_m);
+      _disposeGltfObj(_m);
+      _pc._mobLoaded = false;
+      _mobileDirty = true;
+    }
+  }
+  // Pass 2: load nearby models
+  for (var _pi = 0; _pi < LAYOUT.length; _pi++) {
+    if (_mobActiveLoads >= MAX_MOB_CONCURRENT) break;
     var _pc = LAYOUT[_pi];
     if (_pc._mobLoaded || _pc._mobLoading || !_pc.piece || !_pc.piece.modelUrl) continue;
     var _dx = camera.position.x - _pc.x, _dz = camera.position.z - _pc.z;
-    if (Math.sqrt(_dx*_dx + _dz*_dz) < 8.5) {
+    if (Math.sqrt(_dx*_dx + _dz*_dz) < LOAD_DIST) {
       _pc._mobLoading = true; _mobActiveLoads++;
       (function(_cfg) {
         _gltfLoader.load(_cdnUrl(_cfg.piece.modelUrl), function(gltf) {
@@ -577,7 +607,7 @@ function _mobProximityCheck() {
           m.scale.setScalar(sc);
           var ctr = bbox.getCenter(new THREE.Vector3());
           m.position.set(-ctr.x * sc, -bbox.min.y * sc, -ctr.z * sc);
-          while (_cfg._artifact.children.length) _cfg._artifact.remove(_cfg._artifact.children[0]);
+          while (_cfg._artifact.children.length) { var old = _cfg._artifact.children[0]; _cfg._artifact.remove(old); _disposeGltfObj(old); }
           _cfg._artifact.add(m);
           _mobileDirty = true;
           _cfg._mobLoaded = true; _cfg._mobLoading = false; _mobActiveLoads--;
@@ -903,8 +933,9 @@ document.addEventListener('pointerlockchange', function() {
   if (!document.pointerLockElement) { kb.w = kb.s = kb.a = kb.d = false; }
 });
 
-/* ── Requirements countdown (5 s before entry allowed) ──────────── */
+/* ── Requirements countdown (5 s, desktop only) ─────────────────── */
 (function(){
+  if (isMobile) return;
   var btn = document.getElementById('btn-start');
   var prompt = document.getElementById('start-prompt');
   if (!btn || !prompt) return;

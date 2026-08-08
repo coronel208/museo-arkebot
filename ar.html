@@ -399,6 +399,19 @@
       mv.addEventListener('load', function() {
         clearTimeout(loadTimeout);
         loading.classList.add('hidden');
+        // Check AR availability after model loads
+        setTimeout(function() {
+          var arBtn = document.getElementById('ar-btn-slot');
+          if (!arBtn) return;
+          if (!mv.canActivateAR) {
+            arBtn.style.background = '#555';
+            arBtn.style.color = '#aaa';
+            arBtn.style.cursor = 'default';
+            arBtn.style.boxShadow = 'none';
+            arBtn.innerHTML = '<i class="fas fa-ban"></i> AR no disponible en este dispositivo';
+            arBtn.onclick = null;
+          }
+        }, 500);
       });
 
       mv.addEventListener('error', function() {

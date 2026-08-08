@@ -20,7 +20,7 @@ export const PIECES = [
       'images/volante-de-uso-7.jpg'
     ],
     video: null,
-    modelUrl: 'models/volante-de-uso.glb',
+    modelUrl: 'models/pieza-01.glb',
     restY: 1.19
   },
 
@@ -43,7 +43,7 @@ export const PIECES = [
       'images/volante-de-huso-2-7.jpg'
     ],
     video: null,
-    modelUrl: 'models/volante-de-huso-2.glb',
+    modelUrl: 'models/pieza-02.glb',
     restY: 1.19
   },
 
@@ -63,7 +63,7 @@ export const PIECES = [
       'images/cuenco-1-5.jpg'
     ],
     video: null,
-    modelUrl: 'models/cuenco-1.glb',
+    modelUrl: 'models/pieza-03.glb',
     restY: 1.19
   },
 
@@ -83,7 +83,7 @@ export const PIECES = [
       'images/jarron-1-5.jpg'
     ],
     video: null,
-    modelUrl: 'models/jarron-1.glb',
+    modelUrl: 'models/pieza-04.glb',
     restY: 1.19
   },
 
@@ -105,7 +105,7 @@ export const PIECES = [
       'images/cuenco-2-6.jpg'
     ],
     video: null,
-    modelUrl: 'models/cuenco-2.glb',
+    modelUrl: 'models/pieza-05.glb',
     restY: 1.19
   },
 
@@ -126,7 +126,7 @@ export const PIECES = [
       'images/jarron-3-6.jpg'
     ],
     video: null,
-    modelUrl: 'models/jarron-3.glb',
+    modelUrl: 'models/pieza-06.glb',
     restY: 1.19
   },
 
@@ -146,7 +146,7 @@ export const PIECES = [
       'images/cuenco-carenado-5.jpeg'
     ],
     video: null,
-    modelUrl: 'models/cuenco-carenado.glb',
+    modelUrl: 'models/pieza-07.glb',
     restY: 1.19
   },
 
@@ -166,7 +166,7 @@ export const PIECES = [
       'images/copa-1-5.jpg'
     ],
     video: null,
-    modelUrl: 'models/copa-1.glb',
+    modelUrl: 'models/pieza-08.glb',
     restY: 1.19
   },
 
@@ -188,7 +188,7 @@ export const PIECES = [
       'images/figura-1-7.jpg'
     ],
     video: null,
-    modelUrl: 'models/figura-1.glb',
+    modelUrl: 'models/pieza-09.glb',
     restY: 1.19
   },
 
@@ -209,7 +209,7 @@ export const PIECES = [
       'images/cuenco-asas-6.jpg'
     ],
     video: null,
-    modelUrl: 'models/cuenco-asas.glb',
+    modelUrl: 'models/pieza-10.glb',
     restY: 1.19
   },
 
@@ -230,7 +230,7 @@ export const PIECES = [
       'images/vasija-antropomorfa-6.jpeg'
     ],
     video: null,
-    modelUrl: 'models/vasija-antropomorfa.glb',
+    modelUrl: 'models/pieza-11.glb',
     restY: 1.19
   },
 
@@ -251,7 +251,7 @@ export const PIECES = [
       'images/vasija-globular-asas-6.jpeg'
     ],
     video: null,
-    modelUrl: 'models/vasija-globular-asas.glb',
+    modelUrl: 'models/pieza-12.glb',
     restY: 1.19
   },
 
@@ -272,7 +272,7 @@ export const PIECES = [
       'images/cuenco-miniatura-6.jpeg'
     ],
     video: null,
-    modelUrl: 'models/cuenco-miniatura-carenado.glb',
+    modelUrl: 'models/pieza-13.glb',
     restY: 1.19
   },
 
@@ -292,7 +292,7 @@ export const PIECES = [
       'images/vasija-globular-sonso-5.jpeg'
     ],
     video: null,
-    modelUrl: 'models/vasija-globular-sonso.glb',
+    modelUrl: 'models/pieza-14.glb',
     restY: 1.19
   },
 
@@ -313,7 +313,7 @@ export const PIECES = [
       'images/cuenco-globular-yotoco-6.jpeg'
     ],
     video: null,
-    modelUrl: 'models/cuenco-globular-yotoco.glb',
+    modelUrl: 'models/pieza-15.glb',
     restY: 1.19
   },
 
@@ -334,7 +334,7 @@ export const PIECES = [
       'images/vasija-asas-yotoco-6.jpeg'
     ],
     video: null,
-    modelUrl: 'models/vasija-asas-yotoco.glb',
+    modelUrl: 'models/pieza-16.glb',
     restY: 1.19
   },
 
@@ -354,7 +354,7 @@ export const PIECES = [
       'images/vasija-miniatura-sonso-5.jpeg'
     ],
     video: null,
-    modelUrl: 'models/vasija-miniatura-sonso.glb',
+    modelUrl: 'models/pieza-17.glb',
     restY: 1.19
   },
 
@@ -374,7 +374,7 @@ export const PIECES = [
       'images/copa-pedestal-yotoco-5.jpeg'
     ],
     video: null,
-    modelUrl: 'models/copa-pedestal-yotoco.glb',
+    modelUrl: 'models/pieza-18.glb',
     restY: 1.19
   },
 
@@ -394,7 +394,7 @@ export const PIECES = [
       'images/alcarraza-ilama-5.jpeg'
     ],
     video: null,
-    modelUrl: 'models/alcarraza-ilama.glb',
+    modelUrl: 'models/pieza-19.glb',
     restY: 1.19
   },
 
@@ -414,7 +414,7 @@ export const PIECES = [
       'images/copa-pedestal-malagana-5.jpeg'
     ],
     video: null,
-    modelUrl: 'models/copa-pedestal-malagana.glb',
+    modelUrl: 'models/pieza-20.glb',
     restY: 1.19
   },
 
@@ -437,7 +437,7 @@ export const PIECES = [
       'images/vasija-carenada-helicoidal-6.jpeg'
     ],
     video: null,
-    modelUrl: 'models/vasija-carenada-helicoidal.glb',
+    modelUrl: 'models/pieza-21.glb',
     restY: 1.19
   },
 
@@ -457,7 +457,7 @@ export const PIECES = [
       'images/vasija-globular-yotoco-asas-5.jpeg'
     ],
     video: null,
-    modelUrl: 'models/vasija-globular-yotoco-asas.glb',
+    modelUrl: 'models/pieza-22.glb',
     restY: 1.15
   },
 
@@ -478,7 +478,7 @@ export const PIECES = [
       'images/volante-muisca-decorado-6.jpeg'
     ],
     video: null,
-    modelUrl: 'models/volante-muisca-decorado.glb',
+    modelUrl: 'models/pieza-23.glb',
     restY: 1.19
   },
 
@@ -498,7 +498,7 @@ export const PIECES = [
       'images/cuenco-utilitario-sonso-5.jpeg'
     ],
     video: null,
-    modelUrl: 'models/cuenco-utilitario-sonso.glb',
+    modelUrl: 'models/pieza-24.glb',
     restY: 1.19
   },
 
@@ -518,7 +518,7 @@ export const PIECES = [
       'images/cuenco-miniatura-pedestal-5.jpeg'
     ],
     video: null,
-    modelUrl: 'models/cuenco-miniatura-pedestal.glb',
+    modelUrl: 'models/pieza-25.glb',
     restY: 1.19
   },
 
@@ -540,7 +540,7 @@ export const PIECES = [
       'images/olla-globular-ilama-5.jpeg'
     ],
     video: null,
-    modelUrl: 'models/olla-globular-ilama.glb',
+    modelUrl: 'models/pieza-26.glb',
     restY: 1.15
   },
 
@@ -560,7 +560,7 @@ export const PIECES = [
       'images/vasija-miniatura-calima-5.jpeg'
     ],
     video: null,
-    modelUrl: 'models/vasija-miniatura-calima.glb',
+    modelUrl: 'models/pieza-27.glb',
     restY: 1.19
   },
 
@@ -580,7 +580,7 @@ export const PIECES = [
       'images/vasija-globular-yotoco-28-5.jpeg'
     ],
     video: null,
-    modelUrl: 'models/vasija-globular-yotoco-28.glb',
+    modelUrl: 'models/pieza-28.glb',
     restY: 1.22
   },
 
@@ -601,7 +601,7 @@ export const PIECES = [
       'images/vasija-globular-indeterminada-5.jpeg'
     ],
     video: null,
-    modelUrl: 'models/vasija-globular-indeterminada.glb',
+    modelUrl: 'models/pieza-29.glb',
     restY: 1.32
   },
 
@@ -621,7 +621,7 @@ export const PIECES = [
       'images/vasija-globular-calima-30-5.jpeg'
     ],
     video: null,
-    modelUrl: 'models/vasija-globular-calima-30.glb',
+    modelUrl: 'models/pieza-30.glb',
     restY: 1.05
   },
 
@@ -643,7 +643,7 @@ export const PIECES = [
       'images/vasija-uso-sonso-31-5.jpeg'
     ],
     video: null,
-    modelUrl: 'models/vasija-uso-sonso-31.glb',
+    modelUrl: 'models/pieza-31.glb',
     restY: 1.19
   },
 
@@ -663,7 +663,7 @@ export const PIECES = [
       'images/cuenco-miniatura-asa-32-5.jpeg'
     ],
     video: null,
-    modelUrl: 'models/cuenco-miniatura-asa-32.glb',
+    modelUrl: 'models/pieza-32.glb',
     restY: 1.19
   },
 
@@ -683,7 +683,7 @@ export const PIECES = [
       'images/vasija-carenada-yotoco-33-5.jpeg'
     ],
     video: null,
-    modelUrl: 'models/vasija-carenada-yotoco-33.glb',
+    modelUrl: 'models/pieza-33.glb',
     restY: 1.19
   },
 
@@ -702,7 +702,7 @@ export const PIECES = [
       'images/vasija-globular-yotoco-34-4.jpeg'
     ],
     video: null,
-    modelUrl: 'models/vasija-globular-yotoco-34.glb',
+    modelUrl: 'models/pieza-34.glb',
     restY: 1.19
   },
 
@@ -722,7 +722,7 @@ export const PIECES = [
       'images/cuenco-hemisf-sonso-35-5.jpeg'
     ],
     video: null,
-    modelUrl: 'models/cuenco-hemisf-sonso-35.glb',
+    modelUrl: 'models/pieza-35.glb',
     restY: 1.19
   },
 
@@ -742,7 +742,7 @@ export const PIECES = [
       'images/cuenco-miniatura-tierradentro-36-5.jpeg'
     ],
     video: null,
-    modelUrl: 'models/cuenco-miniatura-tierradentro-36.glb',
+    modelUrl: 'models/pieza-36.glb',
     restY: 1.19
   },
 
@@ -762,7 +762,7 @@ export const PIECES = [
       'images/copa-pedestal-malagana-37-5.jpeg'
     ],
     video: null,
-    modelUrl: 'models/copa-pedestal-malagana-37.glb',
+    modelUrl: 'models/pieza-37.glb',
     restY: 1.19
   },
 
@@ -782,7 +782,7 @@ export const PIECES = [
       'images/vasija-tripode-calima-38-5.jpeg'
     ],
     video: null,
-    modelUrl: 'models/vasija-tripode-calima-38.glb',
+    modelUrl: 'models/pieza-38.glb',
     restY: 1.19
   },
 
@@ -802,7 +802,7 @@ export const PIECES = [
       'images/vasija-apliques-sonso-39-5.jpeg'
     ],
     video: null,
-    modelUrl: 'models/vasija-apliques-sonso-39.glb',
+    modelUrl: 'models/pieza-39.glb',
     restY: 1.19
   },
 
@@ -821,7 +821,7 @@ export const PIECES = [
       'images/vasija-incisa-sonso-40-4.jpeg'
     ],
     video: null,
-    modelUrl: 'models/vasija-incisa-sonso-40.glb',
+    modelUrl: 'models/pieza-40.glb',
     restY: 1.19
   },
 
@@ -843,7 +843,7 @@ export const PIECES = [
       'images/vasija-carenada-vertedera-41-5.jpeg'
     ],
     video: null,
-    modelUrl: 'models/vasija-carenada-vertedera-41.glb',
+    modelUrl: 'models/pieza-41.glb',
     restY: 1.19
   },
 
@@ -863,7 +863,7 @@ export const PIECES = [
       'images/cuenco-mini-asa-perf-42-5.jpeg'
     ],
     video: null,
-    modelUrl: 'models/cuenco-mini-asa-perf-42.glb',
+    modelUrl: 'models/pieza-42.glb',
     restY: 1.19
   },
 
@@ -883,7 +883,7 @@ export const PIECES = [
       'images/cuenco-subglobular-sonso-43-5.jpeg'
     ],
     video: null,
-    modelUrl: 'models/cuenco-subglobular-sonso-43.glb',
+    modelUrl: 'models/pieza-43.glb',
     restY: 1.19
   },
 
@@ -903,7 +903,7 @@ export const PIECES = [
       'images/vasija-mini-globular-44-5.jpeg'
     ],
     video: null,
-    modelUrl: 'models/vasija-mini-globular-44.glb',
+    modelUrl: 'models/pieza-44.glb',
     restY: 1.19
   },
 
@@ -923,7 +923,7 @@ export const PIECES = [
       'images/cuenco-mini-calima-45-5.jpeg'
     ],
     video: null,
-    modelUrl: 'models/cuenco-mini-calima-45.glb',
+    modelUrl: 'models/pieza-45.glb',
     restY: 1.19
   },
 
@@ -943,7 +943,7 @@ export const PIECES = [
       'images/copa-pedestal-frag-yotoco-46-5.jpeg'
     ],
     video: null,
-    modelUrl: 'models/copa-pedestal-frag-yotoco-46.glb',
+    modelUrl: 'models/pieza-46.glb',
     restY: 1.19
   },
 
@@ -963,7 +963,7 @@ export const PIECES = [
       'images/vasija-globular-asas-sonso-47-5.jpeg'
     ],
     video: null,
-    modelUrl: 'models/vasija-globular-asas-sonso-47.glb',
+    modelUrl: 'models/pieza-47.glb',
     restY: 1.32
   },
 
@@ -983,7 +983,7 @@ export const PIECES = [
       'images/vasija-globular-cuello-yotoco-48-5.jpeg'
     ],
     video: null,
-    modelUrl: 'models/vasija-globular-cuello-yotoco-48.glb',
+    modelUrl: 'models/pieza-48.glb',
     restY: 1.19
   },
 
@@ -1003,7 +1003,7 @@ export const PIECES = [
       'images/cuenco-mini-yotoco-49-5.jpeg'
     ],
     video: null,
-    modelUrl: 'models/cuenco-mini-yotoco-49.glb',
+    modelUrl: 'models/pieza-49.glb',
     restY: 1.19
   },
 
@@ -1023,7 +1023,7 @@ export const PIECES = [
       'images/copa-pedestal-moderna-50-5.jpeg'
     ],
     video: null,
-    modelUrl: 'models/copa-pedestal-moderna-50.glb',
+    modelUrl: 'models/pieza-50.glb',
     restY: 1.19
   }
 
