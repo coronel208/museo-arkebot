@@ -67,9 +67,40 @@ function hideLs() {
         }, { once: true });
       } else {
         startPrompt.style.display = 'flex';
+        // Countdown starts NOW (start-prompt is visible)
+        if (!isMobile) _startCountdown();
       }
     }, 750);
   }, 400);
+}
+
+function _startCountdown() {
+  var btn = document.getElementById('btn-start');
+  if (!btn || btn.dataset.cdDone) return;
+  btn.dataset.cdDone = '1';
+  var req = document.createElement('div');
+  req.style.cssText = 'max-width:360px;width:90%;background:rgba(212,175,55,.07);border:1px solid rgba(212,175,55,.28);border-radius:10px;padding:.9rem 1.2rem;text-align:left;margin:.2rem auto 0;';
+  req.innerHTML = '<div style="color:#d4af37;font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem;"><i class="fas fa-exclamation-triangle"></i>&nbsp; Requisitos recomendados</div>'
+    + '<ul style="color:#a99e8c;font-size:.78rem;line-height:1.85;padding-left:1.1rem;margin:0;">'
+    + '<li>WiFi o datos móviles estables</li>'
+    + '<li>Dispositivo fabricado desde 2019</li>'
+    + '<li>Navegador actualizado (Chrome, Safari)</li>'
+    + '<li>En celular: modo horizontal recomendado</li>'
+    + '</ul>';
+  if (btn.parentNode) btn.parentNode.insertBefore(req, btn);
+  btn.disabled = true; btn.style.opacity = '0.5'; btn.style.cursor = 'not-allowed';
+  var sec = 5, origHTML = btn.innerHTML;
+  btn.innerHTML = '<i class="fas fa-clock"></i>&nbsp; Espera ' + sec + 's&hellip;';
+  var t = setInterval(function(){
+    sec--;
+    if (sec <= 0) {
+      clearInterval(t);
+      btn.disabled = false; btn.style.opacity = ''; btn.style.cursor = '';
+      btn.innerHTML = origHTML;
+    } else {
+      btn.innerHTML = '<i class="fas fa-clock"></i>&nbsp; Espera ' + sec + 's&hellip;';
+    }
+  }, 1000);
 }
 
 /* ── Viewport size ───────────────────────────────────────────────── */
@@ -777,9 +808,10 @@ var _exitDlg = document.createElement('div');
 _exitDlg.style.cssText = 'display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:900;align-items:center;justify-content:center;backdrop-filter:blur(6px);';
 _exitDlg.innerHTML = '<div style="background:#13151a;border:1.5px solid rgba(212,175,55,.45);border-radius:14px;padding:2.5rem 3rem;text-align:center;box-shadow:0 0 50px rgba(212,175,55,.22);max-width:400px;width:90%;"><div style="font-size:2rem;margin-bottom:.8rem;">🚪</div><h3 style="font-family:Georgia,serif;color:#d4af37;font-size:1.4rem;margin-bottom:.6rem;">¿Salir de esta sala?</h3><p style="color:#a99e8c;font-size:.88rem;margin-bottom:1.8rem;line-height:1.6;">¿Deseas volver a la Sala Central?</p><div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;"><button id="exit-stay" style="background:transparent;color:#a99e8c;border:1px solid #444;padding:.7rem 1.8rem;border-radius:4px;font-size:.9rem;cursor:pointer;font-family:inherit;">Quedarse</button><button id="exit-go" style="background:#d4af37;color:#000;border:none;padding:.75rem 2.2rem;border-radius:4px;font-size:.9rem;font-weight:700;cursor:pointer;font-family:inherit;">Volver a Central</button></div></div>';
 document.body.appendChild(_exitDlg);
-function _showExitDlg() { _exitDlg.style.display = 'flex'; }
+function _showExitDlg() { _exitDlg.style.display = 'flex'; document.exitPointerLock(); modalOpen = true; }
 document.getElementById('exit-stay').addEventListener('click', function() {
   _exitDlg.style.display = 'none';
+  modalOpen = false;
   if (!isMobile) { if (!document.fullscreenElement) _enterFs(); else safeLock(); }
 });
 document.getElementById('exit-go').addEventListener('click', function() {
@@ -933,42 +965,7 @@ document.addEventListener('pointerlockchange', function() {
   if (!document.pointerLockElement) { kb.w = kb.s = kb.a = kb.d = false; }
 });
 
-/* ── Requirements countdown (5 s, desktop only) ─────────────────── */
-(function(){
-  if (isMobile) return;
-  var btn = document.getElementById('btn-start');
-  var prompt = document.getElementById('start-prompt');
-  if (!btn || !prompt) return;
-  // Requirements notice
-  var req = document.createElement('div');
-  req.style.cssText = 'max-width:360px;width:90%;background:rgba(212,175,55,.07);border:1px solid rgba(212,175,55,.28);border-radius:10px;padding:.9rem 1.2rem;text-align:left;margin:.2rem auto 0;';
-  req.innerHTML = '<div style="color:#d4af37;font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem;"><i class="fas fa-exclamation-triangle"></i>&nbsp; Requisitos recomendados</div>'
-    + '<ul style="color:#a99e8c;font-size:.78rem;line-height:1.85;padding-left:1.1rem;margin:0;">'
-    + '<li>WiFi o datos móviles estables</li>'
-    + '<li>Dispositivo fabricado desde 2019</li>'
-    + '<li>Navegador actualizado (Chrome, Safari)</li>'
-    + '<li>En celular: modo horizontal recomendado</li>'
-    + '</ul>';
-  prompt.insertBefore(req, btn);
-  btn.disabled = true;
-  btn.style.opacity = '0.5';
-  btn.style.cursor = 'not-allowed';
-  var sec = 5;
-  var origHTML = btn.innerHTML;
-  btn.innerHTML = '<i class="fas fa-clock"></i>&nbsp; Espera ' + sec + 's&hellip;';
-  var t = setInterval(function(){
-    sec--;
-    if (sec <= 0) {
-      clearInterval(t);
-      btn.disabled = false;
-      btn.style.opacity = '';
-      btn.style.cursor = '';
-      btn.innerHTML = origHTML;
-    } else {
-      btn.innerHTML = '<i class="fas fa-clock"></i>&nbsp; Espera ' + sec + 's&hellip;';
-    }
-  }, 1000);
-})();
+/* countdown lives inside _startCountdown(), called from hideLs() */
 
 /* ── Mobile Joystick + Touch-look (multi-touch) ──────────────────── */
 var mb = { w: false, s: false, a: false, d: false };

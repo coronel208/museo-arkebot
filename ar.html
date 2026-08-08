@@ -263,7 +263,7 @@
     shadow-softness="0.5"
     exposure="1.1"
     style="display:none;">
-  <button slot="ar-button" id="ar-btn-slot" onclick="(function(e){e.stopPropagation();var mv=document.getElementById('mv');if(mv&&mv.canActivateAR)mv.activateAR();})(event)" style="background:#d4af37;color:#000;border:none;padding:.55rem 1.4rem;border-radius:22px;font-size:.85rem;font-weight:700;cursor:pointer;position:absolute;bottom:130px;right:20px;display:flex;align-items:center;gap:.5rem;box-shadow:0 4px 20px rgba(212,175,55,.45);">
+  <button slot="ar-button" id="ar-btn-slot" style="background:#d4af37;color:#000;border:none;padding:.55rem 1.4rem;border-radius:22px;font-size:.85rem;font-weight:700;cursor:pointer;position:absolute;bottom:130px;right:20px;display:flex;align-items:center;gap:.5rem;box-shadow:0 4px 20px rgba(212,175,55,.45);">
     <i class="fas fa-cube"></i> Ver en AR
   </button>
   </model-viewer>
@@ -399,19 +399,19 @@
       mv.addEventListener('load', function() {
         clearTimeout(loadTimeout);
         loading.classList.add('hidden');
-        // Check AR availability after model loads
-        setTimeout(function() {
-          var arBtn = document.getElementById('ar-btn-slot');
-          if (!arBtn) return;
-          if (!mv.canActivateAR) {
-            arBtn.style.background = '#555';
-            arBtn.style.color = '#aaa';
-            arBtn.style.cursor = 'default';
-            arBtn.style.boxShadow = 'none';
-            arBtn.innerHTML = '<i class="fas fa-ban"></i> AR no disponible en este dispositivo';
-            arBtn.onclick = null;
-          }
-        }, 500);
+      });
+
+      // Detect AR availability: model-viewer fires ar-status on each attempt
+      mv.addEventListener('ar-status', function(e) {
+        var arBtn = document.getElementById('ar-btn-slot');
+        if (!arBtn) return;
+        if (e.detail && e.detail.status === 'failed') {
+          arBtn.style.background = '#3a3a3a';
+          arBtn.style.color = '#888';
+          arBtn.style.cursor = 'default';
+          arBtn.style.boxShadow = 'none';
+          arBtn.innerHTML = '<i class="fas fa-ban"></i>&nbsp;AR no disponible en este dispositivo';
+        }
       });
 
       mv.addEventListener('error', function() {
