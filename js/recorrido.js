@@ -68,7 +68,7 @@ function hideLs() {
       } else {
         startPrompt.style.display = 'flex';
         // Countdown starts NOW (start-prompt is visible)
-        if (!isMobile) _startCountdown();
+        _startCountdown();
       }
     }, 750);
   }, 400);
@@ -80,13 +80,15 @@ function _startCountdown() {
   btn.dataset.cdDone = '1';
   var req = document.createElement('div');
   req.style.cssText = 'max-width:360px;width:90%;background:rgba(212,175,55,.07);border:1px solid rgba(212,175,55,.28);border-radius:10px;padding:.9rem 1.2rem;text-align:left;margin:.2rem auto 0;';
-  req.innerHTML = '<div style="color:#d4af37;font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem;"><i class="fas fa-exclamation-triangle"></i>&nbsp; Requisitos recomendados</div>'
-    + '<ul style="color:#a99e8c;font-size:.78rem;line-height:1.85;padding-left:1.1rem;margin:0;">'
-    + '<li>WiFi o datos móviles estables</li>'
-    + '<li>Dispositivo fabricado desde 2019</li>'
-    + '<li>Navegador actualizado (Chrome, Safari)</li>'
-    + '<li>En celular: modo horizontal recomendado</li>'
-    + '</ul>';
+  req.innerHTML = '<div style="color:#d4af37;font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.6rem;"><i class="fas fa-exclamation-triangle"></i>&nbsp; Requisitos mínimos del recorrido</div>'
+    + '<div style="display:grid;grid-template-columns:auto 1fr;gap:.2rem .7rem;color:#a99e8c;font-size:.75rem;line-height:1.6;">'
+    + '<span style="color:#d4af37;white-space:nowrap;">Computador</span><span>CPU 2014+ · 4 GB RAM · GPU con WebGL 2.0</span>'
+    + '<span style="color:#d4af37;white-space:nowrap;">Android</span><span>Android 9+ (2019) · 2 GB RAM · Chrome 90+</span>'
+    + '<span style="color:#d4af37;white-space:nowrap;">iPhone / iPad</span><span>iPhone 8 (2017) · iOS 14+ · Safari 14+</span>'
+    + '<span style="color:#d4af37;white-space:nowrap;">Conexión</span><span>WiFi o 4G estables · mín. 10 Mbps</span>'
+    + '<span style="color:#d4af37;white-space:nowrap;">Navegador</span><span>Chrome 90+ · Firefox 90+ · Safari 15+ · Edge 90+</span>'
+    + '</div>'
+    + '<div style="margin-top:.5rem;color:#c97050;font-size:.71rem;font-style:italic;"><i class="fas fa-mobile-alt"></i> En celular: modo horizontal recomendado · &lt;2 GB RAM puede fallar.</div>';
   if (btn.parentNode) btn.parentNode.insertBefore(req, btn);
   btn.disabled = true; btn.style.opacity = '0.5'; btn.style.cursor = 'not-allowed';
   var sec = 5, origHTML = btn.innerHTML;
