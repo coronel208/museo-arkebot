@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -14,7 +14,7 @@
     .pag-arrow { color:#d4af37; padding:0 .55rem; }
   </style>
   <script type="importmap">
-    {"imports":{"three":"https://unpkg.com/three@0.158.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.158.0/examples/jsm/"}}
+    {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/"}}
   </script>
 </head>
 <body>
@@ -96,6 +96,14 @@
     <p>© 2026 Museo Seminario Diocesano de Cristo Sacerdote · Colección Malagana</p>
   </footer>
   <script>
+    // Hard fallback: hide loading overlay after 4s max regardless of module load
+    setTimeout(function(){
+      var ov = document.getElementById('col-loading');
+      if (ov && ov.style.display !== 'none') {
+        ov.style.transition = 'opacity .5s'; ov.style.opacity = '0';
+        setTimeout(function(){ ov.style.display = 'none'; }, 500);
+      }
+    }, 4000);
     (function(){
       var toggle = document.querySelector('.nav-toggle');
       var menu   = document.querySelector('.nav-menu');

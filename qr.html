@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -7,10 +7,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <!-- QRCode.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <!-- Three.js importmap — needed because pieces-data.js imports THREE -->
-  <script type="importmap">
-    {"imports":{"three":"https://unpkg.com/three@0.158.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.158.0/examples/jsm/"}}
-  </script>
 
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Raleway:wght@300;400;500;600&display=swap');
@@ -303,7 +299,7 @@
   </div>
 
   <script type="module">
-    import { PIECES } from './js/pieces-data.js';
+    import { PIECES } from './js/pieces-catalog.js';
     window.MUSEUM_CATALOG = PIECES;
     generarTodos();
   </script>
